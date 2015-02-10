@@ -1,23 +1,35 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
-```{r,echo = TRUE}
+
+```r
                 #loading the data
 data<-read.csv("activity.csv")
 ```
 
 ## What is mean total number of steps taken per day?
-```{r,echo = TRUE}
+
+```r
                 #loading dplyr as needed
 library("dplyr")
+```
 
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
                 #summerising the data by date and finding the sum  
 data_sum<-summarise(group_by(data,date),sum(steps,na.rm=TRUE))
 data_sum<-data.frame(data_sum)
@@ -26,17 +38,21 @@ names(data_sum)<-c("date","steps")
                 #plotting the histogram
 par(mar=(c(4,4,1,0)))
 hist(data_sum$steps,main="Histogram of total num of steps per day",xlab="frequency",ylab="total num of steps per day")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
                 #calculating the mean and median
 me<-mean(data_sum$steps)
 med<-median(data_sum$steps)
-
 ```
 
-#### The mean of the total number of steps per day is  `r me`  and median is  `r med` 
+#### The mean of the total number of steps per day is  9354.2295082  and median is  10395 
 
 ## What is the average daily activity pattern?
-```{r,echo = TRUE}
+
+```r
                   #summersing the data by interval and finding mean
 data_mean<-summarise(group_by(data,interval),mean(steps,na.rm=TRUE))
 data_mean<-data.frame(data_mean)
@@ -44,17 +60,22 @@ names(data_mean)<-c("interval","steps")
 
                   #plotting the time series 
 with(data_mean,plot(interval,steps,type="l",ylab="Avg steps per day ",main="Time series of Avg steps per day over intervals"))
- 
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
                   #finding the interval with the maximum avg steps
 max_index<-which.max(data_mean$steps)
 max_steps<-data_mean$steps[max_index]
 max_interval<-data_mean$interval[max_index]
 ```
-#### The interval with maiximum steps averaged over all days is  `r max_interval`  with  `r max_steps`  number of steps
+#### The interval with maiximum steps averaged over all days is  835  with  206.1698113  number of steps
 
 ## Imputing missing values
 
-```{r,echo = TRUE}
+
+```r
                 #counting the number of rows with NA's
 count<-sum(!complete.cases(data))
 
@@ -76,17 +97,19 @@ names(data_sum1)<-c("date","steps")
                 #again  drawing the hist 
 par(mar=(c(4,4,1,0)))
 hist(data_sum1$steps,main="Histogram of total num of steps per day/n with missing values imputed  ",xlab="frequency",ylab="total num of steps per day")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
                 #again  calculating the mean and median
 me<-mean(data_sum1$steps)
 med<-median(data_sum1$steps)
-
-
 ```
-#### total number of missing values in the dataset `r count`
+#### total number of missing values in the dataset 2304
 
 
-####After imputing the missing values the mean of the total number of steps per day is  `r me`  and median is  `r med` 
+####After imputing the missing values the mean of the total number of steps per day is  1.0766189\times 10^{4}  and median is  1.0766189\times 10^{4} 
 
 **DIFFERENCE BETWEEN THE TWO HISTOGRAMS** : Because i have imputed the missing values in the *steps* variable by the mean of the *steps*'s values in that interval over all the days, so the frequency of the values that lies near to the mean of *steps* variable increases, decreasing the variance and increasing the height of the central peak of the new histogram 
 
@@ -94,7 +117,8 @@ med<-median(data_sum1$steps)
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r,echo = TRUE,fig.height=8}
+
+```r
                      #loading lubridate
 library("lubridate")
 
@@ -123,6 +147,6 @@ par(mfrow=c(2,1))
 with(sub1,plot(interval,steps,type="l",ylab="Avg steps per day ",main="Time series of Avg steps per weekday over intervals"))
 
 with(sub2,plot(interval,steps,type="l",ylab="Avg steps per day ",main="Time series of Avg steps per weekend over intervals"))
-
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
